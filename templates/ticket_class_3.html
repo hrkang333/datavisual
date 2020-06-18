@@ -1,0 +1,21 @@
+<!--templates/ticket_class_3.html-->
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>타이타닉</title>
+</head>
+<body>
+<div style="border:3px solid #9DB0AC;">
+    <div id="container"></div>
+
+    <script src="https://code.highcharts.com/highcharts.src.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script>
+
+            Highcharts.chart('container', {{ chart|safe }});
+
+    </script>
+</div>
+</body>
+</html>

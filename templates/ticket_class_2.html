@@ -1,0 +1,42 @@
+<!--templates/ticket_class_2.html-->
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Django Highcharts Example</title>
+</head>
+<body>
+    <a href="{% url 'home' %}">Return to homepage</a>
+    <div id="container"></div>
+    <script src="https://code.highcharts.com/highcharts.src.js"></script>
+    <script>
+        Highcharts.chart('container', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '좌석 등급에 따른 타이타닉 생존/비생존 인원'
+            },
+            xAxis: {
+                categories: {{ categories|safe }}  /* safe 필터 */
+            },
+
+
+            series: [{
+                name: '생존',
+                data: {{ survived_series }},
+                color: 'green'
+            }, {
+                name: '비생존',
+                data: {{ not_survived_series }},
+                color: 'red'
+            }, {
+                name: '생존율',
+                type: 'line',
+                data: {{ survival_rate_series }},
+                color: 'skyblue'
+            },]
+        });
+    </script>
+</body>
+</html>
