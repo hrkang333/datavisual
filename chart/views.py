@@ -73,6 +73,11 @@ def home(request):  #메인
 
 
 
+
+
+
+
+
 def con_19(request):    #확진자
     dataset = Confirmed.objects \
         .values('Date', 'France','Germany','Korea_South','US','United_Kingdom') \
@@ -106,31 +111,31 @@ def con_19(request):    #확진자
     France_series = {
         'name': 'France',
         'data': France_series_data,
-        #'pointInterval': 24 * 3600 * 1200,
+        'pointInterval': 24 * 3600 * 1200,
         'color': '#47C83E'
     }
     Germany_series = {
         'name': 'Germany',
         'data': Germany_series_data,
-        #'pointInterval': 24 * 3600 * 1200,
+        'pointInterval': 24 * 3600 * 1200,
         'color': '#F2CB61'
     }
     Korea_South_series = {
         'name': 'Korea_South',
         'data': Korea_South_series_data,
-        #'pointInterval': 24 * 3600 * 1200,
+        'pointInterval': 24 * 3600 * 1200,
         'color': '#6866FF'
     }
     US_series = {
         'name': 'US',
         'data': US_series_data,
-        #'pointInterval': 24 * 3600 * 1200,
+        'pointInterval': 24 * 3600 * 1200,
         'color': '#DC3977'
     }
     United_Kingdom_series = {
         'name': 'United_Kingdom',
         'data': United_Kingdom_series_data,
-        #'pointInterval': 24 * 3600 * 1200,
+        'pointInterval': 24 * 3600 * 1200,
         'color': '#7C1D6F'
     }
 
@@ -139,8 +144,7 @@ def con_19(request):    #확진자
         'chart': {"type": "spline", "borderColor": "#9DB0AC", "borderWidth": 3},
         'title': {"text": "국가별 covid-19 확진자"},
         'subtitle': {"text": "For the France, Germany, Korea South, US, United Kingdom"},
-        'xAxis': {"type": "datetime"},
-        #'xAxis': {"type": "datetime", 'labels': {'dateTimeLabelFormats': {'month': '%e. %b'}}},
+        'xAxis': {"type": "datetime", 'labels': {'format': '{value: %d. %b}'}},
         'yAxis': [{"labels": {"format": "{value} 건/백만 명", "style": {"color": "blue"}},
                     "title": {"text": "합계 건수", "style": {"color": "blue"}}}],
         "plotOptions": {"spline": {"lineWidth": 3, "states": {"hover": {"lineWidth": 5}}}},
@@ -150,6 +154,20 @@ def con_19(request):    #확진자
     dump = json.dumps(chart)
 
     return render(request, 'con_19.html', {'chart': dump})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def dth_19(request):    #사망자
@@ -218,9 +236,7 @@ def dth_19(request):    #사망자
         'chart': {"type": "spline", "borderColor": "#9DB0AC", "borderWidth": 3},
         'title': {"text": "국가별 covid-19 사망자"},
         'subtitle': {"text": "For the France, Germany, Korea South, US, United Kingdom"},
-        'xAxis': {"type": "datetime", 'labels': {'dateTimeLabelFormats': {'month': '%e. %b'}}},
-   #date = arrow.get(date.year, date.month, date.day).timestamp * 1000
-        # Date = arrow.get(Date.year, Date.month, Date.day).timestamp * 1000
+        'xAxis': {"type": "datetime", 'labels': {'format': '{value: %d. %b}'}},
         'yAxis': [{"labels": {"format": "{value} 건/백만 명", "style": {"color": "blue"}},
                    "title": {"text": "합계 건수", "style": {"color": "blue"}}}],
         "plotOptions": {"spline": {"lineWidth": 3, "states": {"hover": {"lineWidth": 5}}}},
@@ -230,6 +246,18 @@ def dth_19(request):    #사망자
     dump = json.dumps(chart)
 
     return render(request, 'dth_19.html', {'chart': dump})
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def rec_19(request):    #회복자
@@ -298,8 +326,8 @@ def rec_19(request):    #회복자
         'chart': {"type": "spline", "borderColor": "#9DB0AC", "borderWidth": 3},
         'title': {"text": "국가별 covid-19 회복자"},
         'subtitle': {"text": "For the France, Germany, Korea South, US, United Kingdom"},
-        'xAxis': {"type": "datetime", 'labels': {'dateTimeLabelFormats': {'month': '%e. %b'}}},
-   #date = arrow.get(date.year, date.month, date.day).timestamp * 1000
+        'xAxis': {"type": "datetime", 'labels': {'format': '{value: %d. %b}'}},
+        #'xAxis': {"type": "datetime", 'labels': {'dateTimeLabelFormats': {'month': '%e. %b'}}},
         # Date = arrow.get(Date.year, Date.month, Date.day).timestamp * 1000
         'yAxis': [{"labels": {"format": "{value} 건/백만 명", "style": {"color": "blue"}},
                    "title": {"text": "합계 건수", "style": {"color": "blue"}}}],
@@ -313,7 +341,17 @@ def rec_19(request):    #회복자
 
 
 
-def ticket_class_view_3(request):  # 방법 3
+
+
+
+
+
+
+
+
+
+
+def ticket_class_view_3(request):  # 타이타닉
     dataset = Passenger.objects \
         .values('ticket_class') \
         .annotate(survived_count=Count('ticket_class', filter=Q(survived=True)),

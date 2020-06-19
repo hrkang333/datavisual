@@ -15,28 +15,22 @@
                 type: 'column'
             },
             title: {
-                text: '좌석 등급에 따른 타이타닉 생존/비생존 인원'
+                text: 'Titanic Survivors by Ticket Class'
             },
             xAxis: {
                 categories: {{ categories|safe }}  /* safe 필터 */
             },
-
-
             series: [{
-                name: '생존',
+                name: 'Survived',
                 data: {{ survived_series }},
                 color: 'green'
             }, {
-                name: '비생존',
+                name: 'Not survived',
                 data: {{ not_survived_series }},
                 color: 'red'
-            }, {
-                name: '생존율',
-                type: 'line',
-                data: {{ survival_rate_series }},
-                color: 'skyblue'
-            },]
+            }]
         });
     </script>
+
 </body>
 </html>
