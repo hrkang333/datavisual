@@ -1,4 +1,4 @@
-from arrow import arrow
+import arrow
 from django.shortcuts import render
 from .models import Passenger, Confirmed, Deaths, Recovered
 from django.db.models import Count, Q
