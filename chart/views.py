@@ -1,7 +1,10 @@
+import arrow
 from django.shortcuts import render
 from .models import Passenger, Confirmed, Deaths, Recovered
 from django.db.models import Count, Q
 import json  # ***json 임포트 추가***
+import pandas
+import numpy as np
 
 def home(request):  #메인
     dataset = Passenger.objects \
@@ -85,57 +88,52 @@ def con_19(request):    #확진자
 
 # 빈 리스트 6종 준비 (series 이름 뒤에 '_data' 추가)
     Date = list()                 # for xAxis
-    France_series_data = list()       # for series named 'France'
-    Germany_series_data = list()   # for series named 'Germany'
-    Korea_South_series_data = list()   # for series named 'Korea_South'
-    US_series_data = list()   # for series named 'US'
-    United_Kingdom_series_data = list()   # for series named 'United_Kingdom'
+    France_series_data = []       # for series named 'France'
+    Germany_series_data = []   # for series named 'Germany'
+    Korea_South_series_data = []   # for series named 'Korea_South'
+    US_series_data = []   # for series named 'US'
+    United_Kingdom_series_data = []   # for series named 'United_Kingdom'
 
 
  # 리스트 6종에 형식화된 값을 등록
     for entry in dataset:
-        Date.append(entry['Date'])         # for xAxis
 
+        Date = arrow.get(entry['Date'].year, entry['Date'].month, entry['Date'].day).timestamp*1000         # for xAxis
 
-        France_series_data.append(entry['France'])          # for series named 'France'
+        France_series_data.append([Date, np.around(entry['France'], 1)])          # for series named 'France'
 
-        Germany_series_data.append(entry['Germany'])          # for series named 'Germany'
+        Germany_series_data.append([Date, np.around(entry['Germany'], 1)])          # for series named 'Germany'
 
-        Korea_South_series_data.append(entry['Korea_South'])          # for series named 'Korea_South'
+        Korea_South_series_data.append([Date, np.around(entry['Korea_South'], 1)])          # for series named 'Korea_South'
 
-        US_series_data.append(entry['US'])          # for series named 'US'
+        US_series_data.append([Date, np.around(entry['US'], 1)])          # for series named 'US'
 
-        United_Kingdom_series_data.append(entry['United_Kingdom'])          # for series named 'United_Kingdom'
+        United_Kingdom_series_data.append([Date, np.around(entry['United_Kingdom'], 1)])          # for series named 'United_Kingdom'
 
 
     France_series = {
         'name': 'France',
         'data': France_series_data,
-        'pointInterval': 24 * 3600 * 1200,
         'color': '#47C83E'
     }
     Germany_series = {
         'name': 'Germany',
         'data': Germany_series_data,
-        'pointInterval': 24 * 3600 * 1200,
         'color': '#F2CB61'
     }
     Korea_South_series = {
         'name': 'Korea_South',
         'data': Korea_South_series_data,
-        'pointInterval': 24 * 3600 * 1200,
         'color': '#6866FF'
     }
     US_series = {
         'name': 'US',
         'data': US_series_data,
-        'pointInterval': 24 * 3600 * 1200,
         'color': '#DC3977'
     }
     United_Kingdom_series = {
         'name': 'United_Kingdom',
         'data': United_Kingdom_series_data,
-        'pointInterval': 24 * 3600 * 1200,
         'color': '#7C1D6F'
     }
 
@@ -144,7 +142,8 @@ def con_19(request):    #확진자
         'chart': {"type": "spline", "borderColor": "#9DB0AC", "borderWidth": 3},
         'title': {"text": "국가별 covid-19 확진자"},
         'subtitle': {"text": "For the France, Germany, Korea South, US, United Kingdom"},
-        'xAxis': {"type": "datetime", 'labels': {'format': '{value: %d. %b}'}},
+        'xAxis': {"type": "datetime",
+                 'labels': {'format': '{value: %d. %b}'}},
         'yAxis': [{"labels": {"format": "{value} 건/백만 명", "style": {"color": "blue"}},
                     "title": {"text": "합계 건수", "style": {"color": "blue"}}}],
         "plotOptions": {"spline": {"lineWidth": 3, "states": {"hover": {"lineWidth": 5}}}},
@@ -152,110 +151,7 @@ def con_19(request):    #확진자
         'series': [France_series, Germany_series, Korea_South_series, US_series, United_Kingdom_series]
     }
     dump = json.dumps(chart)
-
     return render(request, 'con_19.html', {'chart': dump})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def dth_19(request):    #사망자
-    dataset = Deaths.objects \
-        .values('Date','France','Germany','Korea_South','US','United_Kingdom') \
-        .order_by('Date')
-
-# 빈 리스트 6종 준비 (series 이름 뒤에 '_data' 추가)
-    Date = list()                 # for xAxis
-    France_series_data = list()       # for series named 'France'
-    Germany_series_data = list()   # for series named 'Germany'
-    Korea_South_series_data = list()   # for series named 'Korea_South'
-    US_series_data = list()   # for series named 'US'
-    United_Kingdom_series_data = list()   # for series named 'United_Kingdom'
-
-
-    # 리스트 6종에 형식화된 값을 등록
-    for entry in dataset:
-        Date.append(entry['Date'])         # for xAxis
-
-
-        France_series_data.append(entry['France'])          # for series named 'France'
-
-        Germany_series_data.append(entry['Germany'])          # for series named 'Germany'
-
-        Korea_South_series_data.append(entry['Korea_South'])          # for series named 'Korea_South'
-
-        US_series_data.append(entry['US'])          # for series named 'US'
-
-        United_Kingdom_series_data.append(entry['United_Kingdom'])          # for series named 'United_Kingdom'
-
-
-    France_series = {
-        'name': 'France',
-        'data': France_series_data,
-        'pointInterval': 24 * 3600 * 1200,
-        'color': '#47C83E'
-    }
-    Germany_series = {
-        'name': 'Germany',
-        'data': Germany_series_data,
-        'pointInterval': 24 * 3600 * 1200,
-        'color': '#F2CB61'
-    }
-    Korea_South_series = {
-        'name': 'Korea_South',
-        'data': Korea_South_series_data,
-        'pointInterval': 24 * 3600 * 1200,
-        'color': '#6866FF'
-    }
-    US_series = {
-        'name': 'US',
-        'data': US_series_data,
-        'pointInterval': 24 * 3600 * 1200,
-        'color': '#DC3977'
-    }
-    United_Kingdom_series = {
-        'name': 'United_Kingdom',
-        'data': United_Kingdom_series_data,
-        'pointInterval': 24 * 3600 * 1200,
-        'color': '#7C1D6F'
-    }
-
-
-    chart = {
-        'chart': {"type": "spline", "borderColor": "#9DB0AC", "borderWidth": 3},
-        'title': {"text": "국가별 covid-19 사망자"},
-        'subtitle': {"text": "For the France, Germany, Korea South, US, United Kingdom"},
-        'xAxis': {"type": "datetime", 'labels': {'format': '{value: %d. %b}'}},
-        'yAxis': [{"labels": {"format": "{value} 건/백만 명", "style": {"color": "blue"}},
-                   "title": {"text": "합계 건수", "style": {"color": "blue"}}}],
-        "plotOptions": {"spline": {"lineWidth": 3, "states": {"hover": {"lineWidth": 5}}}},
-
-        'series': [France_series, Germany_series, Korea_South_series, US_series, United_Kingdom_series]
-    }
-    dump = json.dumps(chart)
-
-    return render(request, 'dth_19.html', {'chart': dump})
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -276,18 +172,18 @@ def rec_19(request):    #회복자
 
     # 리스트 6종에 형식화된 값을 등록
     for entry in dataset:
-        Date.append(entry['Date'])         # for xAxis
 
+        Date = arrow.get(entry['Date'].year, entry['Date'].month, entry['Date'].day).timestamp*1000         # for xAxis
 
-        France_series_data.append(entry['France'])          # for series named 'France'
+        France_series_data.append([Date, np.around(entry['France'], 1)])          # for series named 'France'
 
-        Germany_series_data.append(entry['Germany'])          # for series named 'Germany'
+        Germany_series_data.append([Date, np.around(entry['Germany'], 1)])          # for series named 'Germany'
 
-        Korea_South_series_data.append(entry['Korea_South'])          # for series named 'Korea_South'
+        Korea_South_series_data.append([Date, np.around(entry['Korea_South'], 1)])          # for series named 'Korea_South'
 
-        US_series_data.append(entry['US'])          # for series named 'US'
+        US_series_data.append([Date, np.around(entry['US'], 1)])          # for series named 'US'
 
-        United_Kingdom_series_data.append(entry['United_Kingdom'])          # for series named 'United_Kingdom'
+        United_Kingdom_series_data.append([Date, np.around(entry['United_Kingdom'], 1)])          # for series named 'United_Kingdom'
 
 
     France_series = {
@@ -343,7 +239,77 @@ def rec_19(request):    #회복자
 
 
 
+def dth_19(request):    #사망자
+    dataset = Deaths.objects \
+        .values('Date','France','Germany','Korea_South','US','United_Kingdom') \
+        .order_by('Date')
 
+# 빈 리스트 6종 준비 (series 이름 뒤에 '_data' 추가)
+    Date = list()                 # for xAxis
+    France_series_data = list()       # for series named 'France'
+    Germany_series_data = list()   # for series named 'Germany'
+    Korea_South_series_data = list()   # for series named 'Korea_South'
+    US_series_data = list()   # for series named 'US'
+    United_Kingdom_series_data = list()   # for series named 'United_Kingdom'
+
+
+    # 리스트 6종에 형식화된 값을 등록
+    for entry in dataset:
+
+        Date = arrow.get(entry['Date'].year, entry['Date'].month, entry['Date'].day).timestamp*1000         # for xAxis
+
+        France_series_data.append([Date, np.around(entry['France'], 1)])          # for series named 'France'
+
+        Germany_series_data.append([Date, np.around(entry['Germany'], 1)])          # for series named 'Germany'
+
+        Korea_South_series_data.append([Date, np.around(entry['Korea_South'], 1)])          # for series named 'Korea_South'
+
+        US_series_data.append([Date, np.around(entry['US'], 1)])          # for series named 'US'
+
+        United_Kingdom_series_data.append([Date, np.around(entry['United_Kingdom'], 1)])          # for series named 'United_Kingdom'
+
+
+    France_series = {
+        'name': 'France',
+        'data': France_series_data,
+        'color': '#47C83E'
+    }
+    Germany_series = {
+        'name': 'Germany',
+        'data': Germany_series_data,
+        'color': '#F2CB61'
+    }
+    Korea_South_series = {
+        'name': 'Korea_South',
+        'data': Korea_South_series_data,
+        'color': '#6866FF'
+    }
+    US_series = {
+        'name': 'US',
+        'data': US_series_data,
+        'color': '#DC3977'
+    }
+    United_Kingdom_series = {
+        'name': 'United_Kingdom',
+        'data': United_Kingdom_series_data,
+        'color': '#7C1D6F'
+    }
+
+
+    chart = {
+        'chart': {"type": "spline", "borderColor": "#9DB0AC", "borderWidth": 3},
+        'title': {"text": "국가별 covid-19 사망자"},
+        'subtitle': {"text": "For the France, Germany, Korea South, US, United Kingdom"},
+        'xAxis': {"type": "datetime", 'labels': {'format': '{value: %d. %b}'}},
+        'yAxis': [{"labels": {"format": "{value} 건/백만 명", "style": {"color": "blue"}},
+                   "title": {"text": "합계 건수", "style": {"color": "blue"}}}],
+        "plotOptions": {"spline": {"lineWidth": 3, "states": {"hover": {"lineWidth": 5}}}},
+
+        'series': [France_series, Germany_series, Korea_South_series, US_series, United_Kingdom_series]
+    }
+    dump = json.dumps(chart)
+
+    return render(request, 'dth_19.html', {'chart': dump})
 
 
 

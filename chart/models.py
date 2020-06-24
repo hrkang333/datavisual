@@ -1,7 +1,7 @@
 from django.db import models
 
 class Confirmed(models.Model):
-    Date = models.CharField(max_length=100)
+    Date = models.DateField()
     France = models.FloatField(null=True)
     Germany = models.FloatField(null=True)
     Korea_South = models.FloatField(null=True)
@@ -9,7 +9,7 @@ class Confirmed(models.Model):
     United_Kingdom = models.FloatField(null=True)
 
 class Deaths(models.Model):
-    Date = models.CharField(max_length=100)
+    Date = models.DateField()
     France = models.FloatField(null=True)
     Germany = models.FloatField(null=True)
     Korea_South = models.FloatField(null=True)
@@ -17,7 +17,7 @@ class Deaths(models.Model):
     United_Kingdom = models.FloatField(null=True)
 
 class Recovered(models.Model):
-    Date = models.CharField(max_length=100)
+    Date = models.DateField()
     France = models.FloatField(null=True)
     Germany = models.FloatField(null=True)
     Korea_South = models.FloatField(null=True)
