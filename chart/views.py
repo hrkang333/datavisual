@@ -1,9 +1,8 @@
-import arrow
+from arrow import arrow
 from django.shortcuts import render
 from .models import Passenger, Confirmed, Deaths, Recovered
 from django.db.models import Count, Q
 import json  # ***json 임포트 추가***
-import pandas
 import numpy as np
 
 def home(request):  #메인
